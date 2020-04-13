@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>hue</title>
+  <style>
+      body{
+        text-align: center;
+      }
+.button {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 16px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+.button1 {
+  background-color: white; 
+  color: black; 
+  border: 2px solid #4CAF50;
+}
+
+.button1:hover {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.button2 {
+  background-color: white; 
+  color: black; 
+  border: 2px solid #008CBA;
+}
+
+.button2:hover {
+  background-color: #008CBA;
+  color: white;
+}
+</style>
+</head>
+
+<body>
+  <div id="app">
+    <h2>Light Power</h2>
+    
+    <form action="/on" method="post">
+        <input type="submit" value="LED ON" name="ON" class="button button1">
+    </form>
+
+    <form action="/off" method="post">
+        <input type="submit" value="LED OFF" name="OFF" class="button button2">
+    </form>
+
+    <form action="/weather" method="post">
+      <input type="submit" value="날씨정보 가져오기" name="OFF" class="button button2">
+    </form>
+  </div>
+
+  <p>
+    Weather INFO
+    <span id ="hour">(00:00분 기준)</span>
+    <p>
+        <div>
+            강수량 : 
+            <span id="rain">00</span>
+        </div>
+        <div>
+            날씨 : 
+            <span id="weather">00</span>
+        </div>
+        <div>
+            습도 :
+            <span id="humidity">00</span>
+        </div>
+        <div>
+            구름 :
+            <span id="sky">00</span>
+        </div>
+        <div>
+            현재온도 : 
+            <span id="temperature">00</span>
+        </div>
+    </p>
+  </p>
+</body>
+
+<script>
+  var ws = new WebSocket("ws://15.164.250.4:8000");
+
+  ws.onopen = function(event) {
+    ws.send("Client message: Hi!");
+  }
+
+  ws.onmessage = function (event) {
+    var weatherInfo = event.data.split(",");
+    document.getElementById("hour").innerText = "(" + weatherInfo[5] + ":00분 기준)";
+    document.getElementById("rain").innerText = weatherInfo[0];
+    document.getElementById("weather").innerText = weatherInfo[1];
+    document.getElementById("humidity").innerText = weatherInfo[2];
+    document.getElementById("sky").innerText = weatherInfo[3];
+    document.getElementById("temperature").innerText = weatherInfo[4];
+  }
+</script>
+
+</html>
